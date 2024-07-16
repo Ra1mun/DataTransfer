@@ -1,0 +1,4 @@
+# ninja log v5
+1	851	7428375136470877	CMakeFiles/DataTransfer.dir/DataTransfer.cpp.obj	dd39e2bab5f0b0d1
+851	1860	7428375144792169	DataTransfer.exe	2bb17955896e9d4b
+9	41	7428271066512694	CMakeFiles/DataTransfer.dir/test/string_test.cpp.obj	dc057cec3609844
