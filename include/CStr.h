@@ -18,5 +18,6 @@ public:
 	String& operator=(const String& object);
 	void replace_at(int index, const char* replace_chars);
 	void sort();
+	bool is_null();
 	friend std::ostream& operator<<(std::ostream& stream, String& object);
 };

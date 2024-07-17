@@ -78,7 +78,7 @@ String& String::operator=(const String& object)
 		return *this;
 
 	delete[] str;
-	int length = object.length;
+	length = object.length;
 	str = new char[length + 1];
 	for (int i = 0; i < length; i++) {
 		str[i] = object.str[i];
@@ -130,6 +130,11 @@ void String::sort()
 			str[j] = temp;
 		}
 	}
+}
+
+bool String::is_null()
+{
+	return length == 0;
 }
 
 std::ostream& operator<<(std::ostream& stream, String& object)

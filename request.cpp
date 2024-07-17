@@ -29,7 +29,7 @@ void producer() {
 
 		shared_data = request;
 
-		data_ready = true;
+		data_ready = !shared_data.is_null();
 	}
 	cv.notify_one();
 }
@@ -43,6 +43,8 @@ void consumer() {
 
 int main()
 {
+	setlocale(LC_ALL, "Russian");
+
 	std::thread producerThread(producer);
 	std::thread consumerThread(consumer);
 
