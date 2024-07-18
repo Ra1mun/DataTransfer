@@ -1,67 +1,25 @@
 ﻿#include "client.h"
 
-
-const char* ip_address = "127.0.0.1";
-const int port = 12345;
-
-SOCKET clientSocket;
+ClientSocket client;
+string_service data_service;
 std::mutex mtx;
 std::condition_variable cv;
 bool data_ready = false;
-String shared_data;
+std::string shared_data;
 
-void startup_connection() {
-	WSADATA wsaData;
-
-	WSAStartup(MAKEWORD(2, 2), &wsaData);
-
-	clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-}
-
-void wait_connection() {
-	SOCKADDR_IN serverAddr;
-
-	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_addr.s_addr = inet_addr(ip_address);
-	serverAddr.sin_port = htons(port);
-
-	connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr));
-}
-
-void disconnect() {
-	closesocket(clientSocket);
-	WSACleanup();
-}
-
-bool is_empty(const char* message, int size) {
-	return message[0] == '\0';
-}
 
 void producer() {
 	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	{
 		std::lock_guard<std::mutex> lock(mtx);
 
-		String request;
-		request.Input();
-		const char* replacement_substring = "KB";
+		std::string request;
+		std::cin >> request;
 
-		if (request.is_digits() && request.get_length() < 64) {
-			request.sort();
-			int length = request.get_length();
-			int count = 0;
-			for (int i = 0; i < length + count; i++) {
-				if (request[i] % 2 == 0) {
-					request.replace_at(i, replacement_substring);
-					count += strlen(replacement_substring) - 1;
-					i += strlen(replacement_substring) - 1;
-				}
-			}
-		}
-
+		request = data_service.processed_data(request);
+		
 		shared_data = request;
-
-		data_ready = !shared_data.is_null();
+		data_ready = true;
 	}
 	cv.notify_one();
 }
@@ -70,29 +28,29 @@ void consumer() {
 	std::unique_lock<std::mutex> lock(mtx);
 	cv.wait(lock, [] { return data_ready; });
 
-	send(clientSocket, shared_data.c_str(), shared_data.get_length(), 0);
+	char message[3] = { 0 };
+	std::snprintf(message, 3, "%d", data_service.sum_digits(shared_data));
+	data_ready = false;
+	shared_data = "";
+
+	if (!client.try_send_message(message)) {
+		std::cout << "Bad data entered!" << std::endl;
+		return;
+	}
 
 	char buffer[1024] = { 0 };
-	recv(clientSocket, buffer, 1024, 0);
-	if (!is_empty(buffer, 1024)) {
-		std::cout << "Response from server: " << buffer << std::endl;
+	if (!client.try_recieve_message(buffer, 1024)) {
+		std::cout << "Lost connection!" << std::endl;
+		client.wait_connection();
+		return;
 	}
-	else {
-		startup_connection();
-		wait_connection();
-		std::cout << "Lost connection" << std::endl;
-	}
-		
 
-	data_ready = false;
-	shared_data = String();
+	std::cout << "Data successfully sent: " << message << std::endl;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-	startup_connection();
-
-	wait_connection();
+	client.wait_connection();
 
 	while (true){
 		std::thread producerThread(producer);
@@ -102,7 +60,7 @@ int main()
 		consumerThread.join();
 	}
 
-	disconnect();
+	client.disconnect();
 
 	return 0;
 }
