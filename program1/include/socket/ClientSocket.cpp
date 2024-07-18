@@ -1,5 +1,9 @@
 #include "ClientSocket.h"
 
+
+//<summary>
+//Инициализация сокетов
+//<summary>
 void ClientSocket::startup_socket()
 {
 	WSADATA wsaData;
@@ -9,9 +13,12 @@ void ClientSocket::startup_socket()
 	client_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 }
 
+//<summary>
+//Подключение к серверу
+//<summary>
 void ClientSocket::wait_connection()
 {
-	startup_socket();
+	startup_socket(); // обновление сокета
 
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_addr.s_addr = inet_addr(ip_address);
@@ -20,6 +27,9 @@ void ClientSocket::wait_connection()
 	connect(client_socket, (SOCKADDR*)&serverAddr, sizeof(serverAddr));
 }
 
+//<summary>
+//Отключение программы №1 от сокета
+//<summary>
 void ClientSocket::disconnect()
 {
 	closesocket(client_socket);

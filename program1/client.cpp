@@ -7,23 +7,26 @@ std::condition_variable cv;
 bool data_ready = false;
 std::string shared_data;
 
-
+//<summary>
+//Поток №1
+//<summary>
 void producer() {
-	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-	{
-		std::lock_guard<std::mutex> lock(mtx);
+	std::lock_guard<std::mutex> lock(mtx);
 
-		std::string request;
-		std::cin >> request;
+	std::string request;
+	std::cin >> request;
 
-		request = data_service.processed_data(request);
+	request = data_service.processed_data(request);
 		
-		shared_data = request;
-		data_ready = true;
-	}
+	shared_data = request;
+	data_ready = true;
+
 	cv.notify_one();
 }
 
+//<summary>
+//Поток №2
+//<summary>
 void consumer() {
 	std::unique_lock<std::mutex> lock(mtx);
 	cv.wait(lock, [] { return data_ready; });
@@ -50,6 +53,8 @@ void consumer() {
 
 int main(int argc, char* argv[])
 {
+	client.startup_socket();
+
 	client.wait_connection();
 
 	while (true){

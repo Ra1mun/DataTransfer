@@ -21,11 +21,11 @@ int main(int argc, char* argv[])
         server.try_send_message(response);
 
         if (std::atoi(request.c_str()) % 32 != 0 || request.size() < 2) {
-            std::cout << "Failed data recieved: " << request << std::endl;
+            std::cout << "Data error." << std::endl;
             continue;
         }
 
-        std::cout << "Success data recieved: " << request << std::endl;
+        std::cout << "Success data" << std::endl;
     }
 
     server.disconnect();

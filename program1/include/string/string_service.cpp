@@ -1,5 +1,8 @@
 #include "string_service.h"
 
+//<summary>
+//Проверка, что строка содержит только цифры
+//<summary>
 bool string_service::contains_only_digits(std::string str)
 {
     for (int i = 0; i < str.size(); i++) {
@@ -10,6 +13,9 @@ bool string_service::contains_only_digits(std::string str)
     return true;
 }
 
+//<summary>
+//Сортировка Шелла
+//<summary>
 void string_service::shell_sort(std::string& str)
 {
 	int length = str.size();
@@ -27,6 +33,9 @@ void string_service::shell_sort(std::string& str)
 	}
 }
 
+//<summary>
+//Обработка данных, которая была указана в тз
+//<summary>
 std::string string_service::processed_data(const std::string str) {
 	if (!contains_only_digits(str) || str.size() > 64) {
 		return "";
@@ -47,6 +56,9 @@ std::string string_service::processed_data(const std::string str) {
 	return result;
 }
 
+//<summary>
+//Сумма всех цифр строки
+//<summary>
 int string_service::sum_digits(std::string str) {
 	int result = 0;
 	for (int i = 0; i < str.size(); i++) {

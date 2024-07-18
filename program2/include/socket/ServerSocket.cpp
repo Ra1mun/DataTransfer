@@ -1,5 +1,8 @@
 #include "ServerSocket.h"
 
+//<summary>
+//Инициализация сокетов
+//<summary>
 void ServerSocket::startup_socket() {
     WSADATA wsaData;
 
@@ -15,6 +18,9 @@ void ServerSocket::startup_socket() {
     listen(server_socket, SOMAXCONN);
 }
 
+//<summary>
+//Ожидание подключение к программе №2
+//<summary>
 void ServerSocket::wait_connection() {
     std::cout << "Waiting for connections..." << std::endl;
 
@@ -24,6 +30,9 @@ void ServerSocket::wait_connection() {
     std::cout << "Connection successful!" << std::endl;
 }
 
+//<summary>
+//Отключение программы №2 от сокета
+//<summary>
 void ServerSocket::disconnect() {
     closesocket(client_socket);
     closesocket(server_socket);
