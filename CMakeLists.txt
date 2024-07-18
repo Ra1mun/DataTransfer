@@ -11,11 +11,12 @@ project ("DataTransfer")
 include_directories(include)
 
 # Добавьте источник в исполняемый файл этого проекта.
-add_executable (Request "request.cpp" "request.h")
-add_executable (Response "response.cpp" "response.h")
+
+add_subdirectory(program1)
+add_subdirectory(program2)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET Request PROPERTY CXX_STANDARD 20)
-  set_property(TARGET Response PROPERTY CXX_STANDARD 20)
+  set_property(TARGET client PROPERTY CXX_STANDARD 20)
+  set_property(TARGET server PROPERTY CXX_STANDARD 20)
 endif()
 

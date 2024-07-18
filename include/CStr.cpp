@@ -137,6 +137,10 @@ bool String::is_null()
 	return length == 0;
 }
 
+const char* String::c_str() {
+	return str;
+}
+
 std::ostream& operator<<(std::ostream& stream, String& object)
 {
 	for (int i = 0; i < object.get_length(); i++) {

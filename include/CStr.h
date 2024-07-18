@@ -19,5 +19,6 @@ public:
 	void replace_at(int index, const char* replace_chars);
 	void sort();
 	bool is_null();
+	const char* c_str();
 	friend std::ostream& operator<<(std::ostream& stream, String& object);
 };
